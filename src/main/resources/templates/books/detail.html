@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chi tiết sách')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+  <div class="toolbar">
+    <h1 th:text="${book.title}"></h1>
+    <a class="btn secondary" th:href="@{/librarian/books}">← Danh sách</a>
+  </div>
+  <div th:replace="~{fragments/layout :: flash}"></div>
+  <div class="card">
+    <p><b>ISBN:</b> <span th:text="${book.isbn}"></span></p>
+    <p><b>Thể loại:</b> <span th:text="${book.category.name}"></span> · <b>NXB:</b> <span th:text="${book.publisher.name}"></span> · <b>Năm:</b> <span th:text="${book.publishYear}"></span></p>
+    <p><b>Tác giả:</b> <span th:each="a, st : ${book.authors}" th:text="${a.name} + (${st.last} ? '' : ', ')"></span></p>
+    <p><b>Còn lại:</b> <span th:text="${book.availableCopies} + ' / ' + ${book.totalCopies} + ' bản'"></span></p>
+    <p th:text="${book.description}"></p>
+  </div>
+  <h2>Các bản sách</h2>
+  <form class="inline" th:action="@{/librarian/books/{id}/copies(id=${book.id})}" method="post">
+    <input type="text" name="barcode" placeholder="Mã vạch bản sách mới" required>
+    <button class="btn" type="submit">+ Thêm bản</button>
+  </form>
+  <table>
+    <thead><tr><th>#</th><th>Mã vạch</th><th>Trạng thái</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="c : ${book.copies}">
+        <td th:text="${c.id}"></td>
+        <td th:text="${c.barcode}"></td>
+        <td>
+          <form class="inline" th:action="@{/librarian/books/copies/{id}/status(id=${c.id})}" method="post">
+            <select name="status" onchange="this.form.submit()">
+              <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == c.status}"></option>
+            </select>
+          </form>
+        </td>
+        <td class="actions">
+          <form th:action="@{/librarian/books/copies/{id}/delete(id=${c.id})}" method="post" onsubmit="return confirm('Xoá bản sách này?')">
+            <button class="btn sm danger" type="submit">Xoá</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(book.copies)}"><td colspan="4" class="empty">Chưa có bản sách nào</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

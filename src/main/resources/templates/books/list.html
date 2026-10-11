@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Danh sách sách')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+  <div class="toolbar">
+    <h1>Danh sách sách</h1>
+    <a class="btn" th:href="@{/librarian/books/new}">+ Thêm sách</a>
+  </div>
+  <div th:replace="~{fragments/layout :: flash}"></div>
+  <table>
+    <thead><tr><th>#</th><th>Tên sách</th><th>ISBN</th><th>Thể loại</th><th>NXB</th><th>Tác giả</th><th>Còn / Tổng</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="b : ${books}">
+        <td th:text="${b.id}"></td>
+        <td><a th:href="@{/librarian/books/{id}(id=${b.id})}" th:text="${b.title}"></a></td>
+        <td th:text="${b.isbn}"></td>
+        <td th:text="${b.category.name}"></td>
+        <td th:text="${b.publisher.name}"></td>
+        <td><span th:each="a, st : ${b.authors}" th:text="${a.name} + (${st.last} ? '' : ', ')"></span></td>
+        <td th:text="${b.availableCopies} + ' / ' + ${b.totalCopies}"></td>
+        <td class="actions">
+          <a class="btn sm" th:href="@{/librarian/books/{id}/edit(id=${b.id})}">Sửa</a>
+          <form th:action="@{/librarian/books/{id}/delete(id=${b.id})}" method="post" onsubmit="return confirm('Xoá sách này?')">
+            <button class="btn sm danger" type="submit">Xoá</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(books)}"><td colspan="8" class="empty">Chưa có sách nào</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' | Thư viện PTIT'">Thư viện PTIT</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="nav" th:fragment="nav">
+  <a class="brand" th:href="@{/}">Thư viện PTIT</a>
+  <a th:href="@{/librarian/books}">Quản lý sách</a>
+</nav>
+<div th:fragment="flash">
+  <div class="alert ok" th:if="${message}" th:text="${message}"></div>
+  <div class="alert err" th:if="${error}" th:text="${error}"></div>
+</div>
+</body>
+</html>

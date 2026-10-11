@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thông tin sách')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container narrow">
+  <h1 th:text="${bookForm.id == null} ? 'Thêm sách' : 'Sửa sách'"></h1>
+  <form th:action="@{/librarian/books/save}" th:object="${bookForm}" method="post" class="form">
+    <input type="hidden" th:field="*{id}">
+    <label>Tên sách
+      <input type="text" th:field="*{title}">
+      <small class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small></label>
+    <label>ISBN
+      <input type="text" th:field="*{isbn}">
+      <small class="error" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></small></label>
+    <label>Năm xuất bản
+      <input type="number" th:field="*{publishYear}">
+      <small class="error" th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}"></small></label>
+    <label>Thể loại
+      <select th:field="*{categoryId}">
+        <option value="">-- Chọn thể loại --</option>
+        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+      </select>
+      <small class="error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></small></label>
+    <label>Nhà xuất bản
+      <select th:field="*{publisherId}">
+        <option value="">-- Chọn NXB --</option>
+        <option th:each="p : ${publishers}" th:value="${p.id}" th:text="${p.name}"></option>
+      </select>
+      <small class="error" th:if="${#fields.hasErrors('publisherId')}" th:errors="*{publisherId}"></small></label>
+    <label>Tác giả (giữ Ctrl để chọn nhiều)
+      <select th:field="*{authorIds}" multiple size="4">
+        <option th:each="a : ${authors}" th:value="${a.id}" th:text="${a.name}"></option>
+      </select>
+      <small class="error" th:if="${#fields.hasErrors('authorIds')}" th:errors="*{authorIds}"></small></label>
+    <label>Mô tả
+      <textarea th:field="*{description}" rows="4"></textarea></label>
+    <div class="actions">
+      <button class="btn" type="submit">Lưu</button>
+      <a class="btn secondary" th:href="@{/librarian/books}">Huỷ</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>
